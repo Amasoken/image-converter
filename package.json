@@ -1,0 +1,23 @@
+{
+    "name": "image-converter",
+    "version": "0.1.0",
+    "description": "Convert images",
+    "main": "index.js",
+    "repository": "git@github.com:Amasoken/image-converter.git",
+    "author": "Amasoken <amasoken@gmail.com>",
+    "license": "GNU GPLv3",
+    "private": false,
+    "engines": {
+        "node": ">= 14.x"
+    },
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
+    },
+    "dependencies": {
+        "sharp": "^0.31.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.19"
+    }
+}
