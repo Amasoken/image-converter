@@ -1,5 +1,29 @@
 const sharp = require('sharp');
 const fs = require('fs');
+const pathUtil = require('path');
+
+function getFileList(files) {
+    const fileList = [];
+
+    for (const path of files) {
+        scanFiles(path, (filePath) => fileList.push(filePath));
+    }
+
+    return fileList;
+}
+
+function scanFiles(path, cb) {
+    const stats = fs.lstatSync(path);
+
+    if (stats.isDirectory()) {
+        const directoryItems = fs.readdirSync(path);
+        for (const itemPath of directoryItems) {
+            scanFiles(pathUtil.join(path, itemPath), cb);
+        }
+    } else if (stats.isFile()) {
+        cb(path);
+    }
+}
 
 function getFileName(path) {
     if (typeof path !== 'string') throw new Error('Expected path to be a string');
@@ -61,4 +85,4 @@ async function convertImage(file, params) {
     });
 }
 
-module.exports = { convertImage, getFileName };
+module.exports = { convertImage, getFileList };

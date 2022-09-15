@@ -1,4 +1,4 @@
-const { convertImage } = require('./src/file');
+const { convertImage, getFileList } = require('./src/file');
 
 const FORMATS = {
     jpeg: { format: 'jpeg' },
@@ -25,9 +25,10 @@ async function convertFiles() {
 
     if (mode && Object.keys(FORMATS).includes(mode) && files.length) {
         const params = FORMATS[mode];
+        const fileList = getFileList(files);
         const errors = {};
 
-        for (const file of files) {
+        for (const file of fileList) {
             await convertImage(file, params)
                 .then(({ oldPath, newPath }) => console.log(`Converted     ${oldPath}\n     Into     ${newPath}\n`))
                 .catch((error) => {
