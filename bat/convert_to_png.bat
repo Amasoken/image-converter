@@ -1,5 +1,5 @@
 @echo off
 
-cd "%~dp0" && cd "../" && node "index.js" png %*
+node "%~dp0..\index.js" png %*
 
 if errorlevel 1 pause

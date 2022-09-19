@@ -1,6 +1,6 @@
 @echo off
 
-cd "%~dp0" && cd "../" && node "index.js" avif %*
+node "%~dp0..\index.js" avif %*
 
 if errorlevel 1 pause
 
