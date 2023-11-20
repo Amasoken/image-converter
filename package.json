@@ -15,9 +15,9 @@
         "dev": "nodemon index.js"
     },
     "dependencies": {
-        "sharp": "^0.31.0"
+        "sharp": "^0.32.6"
     },
     "devDependencies": {
-        "nodemon": "^2.0.19"
+        "nodemon": "^3.0.1"
     }
 }
