@@ -3,6 +3,19 @@ const { convertImage, getFileList } = require('./src/file');
 const FORMATS = {
     jpeg: { format: 'jpeg' },
     png: { format: 'png' },
+    png_sticker: {
+        format: 'png',
+        actions: [
+            (img) =>
+                img.resize({
+                    width: 512,
+                    height: 512,
+                    fit: 'contain',
+                    background: { r: 255, g: 255, b: 255, alpha: 0 },
+                    withoutEnlargement: true,
+                }),
+        ],
+    },
     webp: { format: 'webp' },
     webp_sticker: {
         format: 'webp',
