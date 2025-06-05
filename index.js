@@ -33,6 +33,31 @@ const FORMATS = {
     avif: { format: 'avif' },
 };
 
+async function runAsyncQueueFromGenerator(getNext, concurrency = 10) {
+    let activeCount = 0;
+
+    const processNext = async (resolve) => {
+        const currentFunction = getNext();
+
+        if (!currentFunction) {
+            if (activeCount === 0) resolve();
+            return;
+        }
+
+        activeCount++;
+        await currentFunction();
+        activeCount--;
+
+        processNext(resolve);
+    };
+
+    return new Promise((resolve) => {
+        for (let i = 0; i < concurrency; i++) {
+            processNext(resolve);
+        }
+    });
+}
+
 async function convertFiles() {
     const [mode, ...files] = process.argv.slice(2);
 
@@ -41,13 +66,23 @@ async function convertFiles() {
         const fileList = getFileList(files);
         const errors = {};
 
-        for (const file of fileList) {
-            await convertImage(file, params)
-                .then(({ oldPath, newPath }) => console.log(`Converted     ${oldPath}\n     Into     ${newPath}\n`))
-                .catch((error) => {
-                    errors[file] = error.message;
-                });
+        function* queueMaker() {
+            for (const file of fileList) {
+                yield () =>
+                    convertImage(file, params)
+                        .then(({ oldPath, newPath }) =>
+                            console.log(`Converted     ${oldPath}\n     Into     ${newPath}\n`)
+                        )
+                        .catch((error) => {
+                            errors[file] = error.message;
+                        });
+            }
+
+            return;
         }
+
+        const queue = queueMaker();
+        await runAsyncQueueFromGenerator(() => queue.next().value, 10);
 
         if (Object.keys(errors).length) {
             console.log('========\nEncountered ' + Object.keys(errors).length + ' errors while converting:\n');
