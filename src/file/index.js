@@ -66,7 +66,7 @@ async function getNewFilePath(folder, name, format) {
 
 async function convertImage(file, params) {
     return new Promise(async (resolve, reject) => {
-        const { format } = params;
+        const { format, preserveDate = false } = params;
         const { folder, name, ext } = getFileName(file);
 
         const img = sharp(file).withMetadata();
@@ -77,6 +77,11 @@ async function convertImage(file, params) {
 
         const newPath = await getNewFilePath(folder, name, format);
         await img.toFile(newPath).catch(reject);
+
+        if (preserveDate) {
+            const { atime, mtime } = await fs.promises.stat(file);
+            await fs.promises.utimes(newPath, atime, mtime);
+        }
 
         resolve({
             oldPath: `${folder}/${name}.${ext}`,

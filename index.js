@@ -17,6 +17,7 @@ const FORMATS = {
         ],
     },
     webp: { format: 'webp' },
+    webp_same_date: { format: 'webp', preserveDate: true },
     webp_sticker: {
         format: 'webp',
         actions: [
@@ -27,6 +28,18 @@ const FORMATS = {
                     fit: 'contain',
                     background: { r: 255, g: 255, b: 255, alpha: 0 },
                     withoutEnlargement: true,
+                }),
+        ],
+    },
+    webp_sticker_upscale: {
+        format: 'webp',
+        actions: [
+            (img) =>
+                img.resize({
+                    width: 512,
+                    height: 512,
+                    fit: 'cover',
+                    background: { r: 255, g: 255, b: 255, alpha: 0 },
                 }),
         ],
     },
@@ -96,6 +109,7 @@ async function convertFiles() {
         }
     } else {
         console.log('No files to convert');
+        process.exit(1);
     }
 }
 
